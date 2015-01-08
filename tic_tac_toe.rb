@@ -6,12 +6,11 @@
 # has 3 marks in a row wins.
 
 class Human
-  attr_reader :mark, :name
+  attr_reader :name
 
   def initialize
     puts "Please enter your name:"
     name = gets.chomp
-    mark = "X"
   end
 
   def pick_square(board)
@@ -21,16 +20,16 @@ class Human
       break if board.square_available?(square)
       puts "You cannot put your mark there! Please enter empty 1-9 field!"
     end
+    board.update(square, "X")
   end
 end
 
 class Computer
-  attr_reader :mark, :name
+  attr_reader :name
 
   def initialize
     puts "Please enter the name for computer player:"
     name = gets.chomp
-    mark = "O"
   end
 end
 
@@ -65,7 +64,8 @@ class Board
       """
   end
 
-  def update
+  def update(square, mark)
+    board[board.key(square)] = mark
   end
 
   def square_available?(square)
@@ -86,6 +86,7 @@ class Game
     board = Board.new
     board.draw
     player.pick_square(board)
+    board.draw
   end
 end
 
