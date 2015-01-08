@@ -6,6 +6,8 @@
 # has 3 marks in a row wins.
 
 class Player
+  attr_accessor :name
+
   def initialize
   end
 
@@ -13,6 +15,12 @@ class Player
     puts "Please enter name for the #{who}:"
     name = gets.chomp
   end
+end
+
+class Human < Player
+end
+
+class Computer < Player
 end
 
 class Board
@@ -56,8 +64,12 @@ class Mark
 end
 
 class Game
+  attr_reader :board
+
   def initialize
     puts "TIC * TAC * TOE"
+    @board = Board.new
+    @player = Player.new
   end
 
   def play
