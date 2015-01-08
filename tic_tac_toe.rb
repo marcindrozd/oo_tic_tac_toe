@@ -5,7 +5,7 @@ class Human
 
   def initialize
     puts "Please enter your name:"
-    self.name = gets.chomp
+    @name = gets.chomp
   end
 
   def pick_square(board)
@@ -24,17 +24,14 @@ class Computer
 
   def initialize
     puts "Please enter the name for computer player:"
-    self.name = gets.chomp
+    @name = gets.chomp
   end
 
   def pick_square(board)
     if two_in_a_row(board).is_a?(String)
       square = two_in_a_row(board)
     else
-      available_squares = board.board.values
-      available_squares.delete("X")
-      available_squares.delete("O")
-      square = available_squares.sample
+      square = board.available_squares.sample
     end
     board.update(square, "O")
   end
@@ -68,11 +65,16 @@ class Board
     }
   end
 
+  # return array of available squares
+  def available_squares
+    squares = board.values
+    squares.delete("X")
+    squares.delete("O")
+    squares
+  end
+
   # check if board is full
   def full?
-    available_squares = board.values
-    available_squares.delete("X")
-    available_squares.delete("O")
     available_squares.empty?
   end
 
@@ -104,16 +106,14 @@ class Board
 
   # checks if there is a winner
   def winner?
-    if (board[:a] == board[:b] && board[:b] == board[:c]) ||
-      (board[:d] == board[:e] && board[:e] == board[:f]) ||
-      (board[:g] == board[:h] && board[:h] == board[:i]) ||
-      (board[:a] == board[:d] && board[:d] == board[:g]) ||
-      (board[:b] == board[:e] && board[:e] == board[:h]) ||
-      (board[:c] == board[:f] && board[:f] == board[:i]) ||
-      (board[:a] == board[:e] && board[:e] == board[:i]) ||
-      (board[:c] == board[:e] && board[:e] == board[:g])
-      true
-    end
+    (board[:a] == board[:b] && board[:b] == board[:c]) ||
+    (board[:d] == board[:e] && board[:e] == board[:f]) ||
+    (board[:g] == board[:h] && board[:h] == board[:i]) ||
+    (board[:a] == board[:d] && board[:d] == board[:g]) ||
+    (board[:b] == board[:e] && board[:e] == board[:h]) ||
+    (board[:c] == board[:f] && board[:f] == board[:i]) ||
+    (board[:a] == board[:e] && board[:e] == board[:i]) ||
+    (board[:c] == board[:e] && board[:e] == board[:g])
   end
 end
 
