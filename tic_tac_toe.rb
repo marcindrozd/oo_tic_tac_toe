@@ -5,12 +5,14 @@
 # If board is full and no player has a line of marks, it's a tie. Otherwise 1st player who
 # has 3 marks in a row wins.
 
+require "pry"
+
 class Human
-  attr_reader :name
+  attr_accessor :name
 
   def initialize
     puts "Please enter your name:"
-    name = gets.chomp
+    self.name = gets.chomp
   end
 
   def pick_square(board)
@@ -25,11 +27,19 @@ class Human
 end
 
 class Computer
-  attr_reader :name
+  attr_accessor :name
 
   def initialize
     puts "Please enter the name for computer player:"
-    name = gets.chomp
+    self.name = gets.chomp
+  end
+
+  def pick_square(board)
+    available_squares = board.board.values
+    available_squares.delete("X")
+    available_squares.delete("O")
+    square = available_squares.sample
+    board.update(square, "O")
   end
 end
 
@@ -45,6 +55,10 @@ class Board
   end
 
   def full?
+    available_squares = board.values
+    available_squares.delete("X")
+    available_squares.delete("O")
+    available_squares.empty?
   end
 
   def draw
@@ -71,10 +85,24 @@ class Board
   def square_available?(square)
     board.values.include?(square)
   end
+
+  def winner?
+    if (board[:a] == board[:b] && board[:b] == board[:c]) ||
+      (board[:d] == board[:e] && board[:e] == board[:f]) ||
+      (board[:g] == board[:h] && board[:h] == board[:i]) ||
+      (board[:a] == board[:d] && board[:d] == board[:g]) ||
+      (board[:b] == board[:e] && board[:e] == board[:h]) ||
+      (board[:c] == board[:f] && board[:f] == board[:i]) ||
+      (board[:a] == board[:e] && board[:e] == board[:i]) ||
+      (board[:c] == board[:e] && board[:e] == board[:g])
+      true
+    end
+  end
 end
 
 class Game
   attr_reader :board, :player, :computer
+  attr_accessor :current_player
 
   def initialize
     puts "WELCOME TO TIC * TAC * TOE"
@@ -82,11 +110,33 @@ class Game
     @computer = Computer.new
   end
 
+  def display_message(current_player, win = false)
+    if win == true
+      puts "#{current_player} wins!"
+    else
+      puts "It's a tie!"
+    end
+  end
+
   def play
     board = Board.new
-    board.draw
-    player.pick_square(board)
-    board.draw
+    
+    while true
+      board.draw
+      current_player = player
+      player.pick_square(board)
+      board.draw
+      break if board.winner? == true
+      break if board.full?
+      current_player = computer
+      computer.pick_square(board)
+      board.draw
+      break if board.winner? == true
+      break if board.full?
+    end
+
+    # puts message that says either who won or that there is a tie
+    display_message(current_player.name, board.winner?)
   end
 end
 
