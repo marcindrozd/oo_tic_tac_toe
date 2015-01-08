@@ -5,22 +5,17 @@
 # If board is full and no player has a line of marks, it's a tie. Otherwise 1st player who
 # has 3 marks in a row wins.
 
-class Player
-  attr_accessor :name
+class Human
+  attr_reader :mark, :name #mark can perhaps be local variable
 
   def initialize
-  end
-
-  def enter_name(who)
-    puts "Please enter name for the #{who}:"
+    puts "Please enter your name:"
     name = gets.chomp
+    mark = "X"
   end
 end
 
-class Human < Player
-end
-
-class Computer < Player
+class Computer
 end
 
 class Board
@@ -64,12 +59,13 @@ class Mark
 end
 
 class Game
-  attr_reader :board
+  attr_reader :board, :player, :computer
 
   def initialize
     puts "TIC * TAC * TOE"
     @board = Board.new
-    @player = Player.new
+    @player = Human.new
+    @computer = Computer.new
   end
 
   def play
