@@ -1,11 +1,4 @@
-# Two players game. Players draw board with 9 empty squares
-# Player one picks 'X', player two picks 'O'. Player X picks an empty square and draws X
-# Player two picks emtpy square and draws 'O'.
-# Players repeat their movement until board is full or one player has 3 his marks in a row
-# If board is full and no player has a line of marks, it's a tie. Otherwise 1st player who
-# has 3 marks in a row wins.
-
-require "pry"
+# Object Oriented Tic Tac Toe
 
 class Human
   attr_accessor :name
@@ -35,11 +28,32 @@ class Computer
   end
 
   def pick_square(board)
-    available_squares = board.board.values
-    available_squares.delete("X")
-    available_squares.delete("O")
-    square = available_squares.sample
+    if two_in_a_row(board).is_a?(String)
+      square = two_in_a_row(board)
+    else
+      available_squares = board.board.values
+      available_squares.delete("X")
+      available_squares.delete("O")
+      square = available_squares.sample
+    end
     board.update(square, "O")
+  end
+
+  # If player has two Xs in a row, computer will pick one to block the win
+  def two_in_a_row(board)
+    winning_conditions = [[:a, :b, :c], [:d, :e, :f], [:g, :h, :i], [:a, :d, :g],
+                      [:b, :e, :h], [:c, :f, :i], [:a, :e, :i], [:c, :e, :g]]
+    winning_conditions.each do |line|
+      if board.board.values_at(*line).count("X") == 2
+        potential_move = []
+        line.each do |item|
+          potential_move << item if board.board[item] != "X" && board.board[item] != "O"
+        end
+        return board.board[potential_move.first] if !potential_move.empty?
+      else
+        false
+      end
+    end
   end
 end
 
@@ -54,6 +68,7 @@ class Board
     }
   end
 
+  # check if board is full
   def full?
     available_squares = board.values
     available_squares.delete("X")
@@ -82,10 +97,12 @@ class Board
     board[board.key(square)] = mark
   end
 
+  # checks if selected move is valid
   def square_available?(square)
     board.values.include?(square)
   end
 
+  # checks if there is a winner
   def winner?
     if (board[:a] == board[:b] && board[:b] == board[:c]) ||
       (board[:d] == board[:e] && board[:e] == board[:f]) ||
@@ -119,24 +136,29 @@ class Game
   end
 
   def play
-    board = Board.new
-    
     while true
-      board.draw
-      current_player = player
-      player.pick_square(board)
-      board.draw
-      break if board.winner? == true
-      break if board.full?
-      current_player = computer
-      computer.pick_square(board)
-      board.draw
-      break if board.winner? == true
-      break if board.full?
-    end
+      board = Board.new
+      
+      while true
+        board.draw
+        current_player = player
+        player.pick_square(board)
+        board.draw
+        break if board.winner? == true
+        break if board.full?
+        current_player = computer
+        computer.pick_square(board)
+        board.draw
+        break if board.winner? == true
+        break if board.full?
+      end
 
-    # puts message that says either who won or that there is a tie
-    display_message(current_player.name, board.winner?)
+      display_message(current_player.name, board.winner?)
+
+      puts "Play again? (y/n)"
+      response = gets.chomp.downcase
+      break if response != "y"
+    end
   end
 end
 
