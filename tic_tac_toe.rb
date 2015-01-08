@@ -1,5 +1,7 @@
 # Object Oriented Tic Tac Toe
 
+require "pry"
+
 class Human
   attr_accessor :name
 
@@ -135,22 +137,26 @@ class Game
     end
   end
 
+  def switch_player
+    if @current_player == @player
+      @current_player = @computer
+    else
+      @current_player = @player
+    end
+  end
+
   def play
     while true
       board = Board.new
+      @current_player = [@player, @computer].sample
       
       while true
         board.draw
-        current_player = player
-        player.pick_square(board)
+        current_player.pick_square(board)
         board.draw
         break if board.winner? == true
         break if board.full?
-        current_player = computer
-        computer.pick_square(board)
-        board.draw
-        break if board.winner? == true
-        break if board.full?
+        switch_player
       end
 
       display_message(current_player.name, board.winner?)
