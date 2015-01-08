@@ -5,13 +5,65 @@
 # If board is full and no player has a line of marks, it's a tie. Otherwise 1st player who
 # has 3 marks in a row wins.
 
-Player
-pick_square
+class Player
+  def initialize
+  end
 
-Board
-check_if_board_full
+  def enter_name(who)
+    puts "Please enter name for the #{who}:"
+    name = gets.chomp
+  end
+end
 
-Mark
-draw
+class Board
+  attr_accessor :board
 
-Game
+  def initialize
+    @board = {
+              a: "1", b: "2", c: "3", 
+              d: "4", e: "5", f: "6", 
+              g: "7", h: "8", i: "9"
+    }
+  end
+
+  def full?
+  end
+
+  def draw
+    system "clear"
+    puts """
+           |     |     
+        #{board[:a]}  |  #{board[:b]}  |  #{board[:c]}   
+           |     |
+      -----+-----+-----
+           |     |     
+        #{board[:d]}  |  #{board[:e]}  |  #{board[:f]}
+           |     |
+      -----+-----+-----
+           |     |     
+        #{board[:g]}  |  #{board[:h]}  |  #{board[:i]}
+           |     |
+      """
+  end
+
+  def update
+  end
+end
+
+class Mark
+  def draw
+  end
+end
+
+class Game
+  def initialize
+    puts "TIC * TAC * TOE"
+  end
+
+  def play
+    board = Board.new
+    board.draw
+  end
+end
+
+tic_tac_toe = Game.new.play
